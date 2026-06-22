@@ -111,7 +111,7 @@ public class VentanaPedido extends JFrame{
         comboProductos.addItem(nombreProducto); //Agregamos
         }
 
-        //Boton para elegir (productos con personalizacion)
+        //Escuchador de la lista comboProductos (productos con personalizacion)
         comboProductos.addActionListener(new ActionListener() { 
             @Override
             public void actionPerformed(ActionEvent e) {
