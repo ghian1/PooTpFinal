@@ -13,6 +13,9 @@ import java.awt.event.ActionEvent;
 import Logica.Cafeteria; 
 import Modelo.Cliente;
 
+import Vista.EstilosUI.Tipo;
+import Vista.EstilosUI.VentanaEscalable;
+
 public class VentanaPedido extends JFrame{
     private Cafeteria miCafeteria;
     private Cliente clienteActivo;
@@ -33,40 +36,25 @@ public class VentanaPedido extends JFrame{
         
         //Config que venimos usando. 
         setTitle("Realizar Nuevo Pedido - Diomande");
-        setSize(500, 500);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); // Solo cierra ESTA ventana, no todo el programa
-        setLocationRelativeTo(null); // La centra en la pantalla
-        setLayout(null);
 
         //Cartel
         JLabel lblMesa = new JLabel("Seleccione la Mesa:"); 
-        lblMesa.setBounds(30, 30, 150, 25);
-        add(lblMesa);
 
         //Lista desplegable con las mesas
         comboMesas = new JComboBox<>(); 
-        comboMesas.setBounds(180, 30, 260, 25);
-        add(comboMesas);
 
         //Cartel
         JLabel lblProducto = new JLabel("Seleccione Producto:");
-        lblProducto.setBounds(30, 80, 150, 25);
-        add(lblProducto);
 
         //Lista Desplegable con productos
         comboProductos = new JComboBox<>();
-        comboProductos.setBounds(180, 80, 260, 25);
-        add(comboProductos);
 
         // Botón para agregar el ítem seleccionado al carrito
         btnAgregarItem = new JButton("Agregar al Pedido +");
-        btnAgregarItem.setBounds(180, 160, 260, 30);
-        add(btnAgregarItem);
 
         //Cartel
         JLabel lblResumen = new JLabel("Resumen del Pedido:");
-        lblResumen.setBounds(30, 210, 150, 25);
-        add(lblResumen);
 
         // JTextArea es un cuadro de texto gigante. Lo seteamos para que no se pueda escribir a mano
         txtResumen = new JTextArea();
@@ -74,30 +62,35 @@ public class VentanaPedido extends JFrame{
 
         // JScrollPane es una caja contenedora donde almacenamos los productos
         JScrollPane scrollPane = new JScrollPane(txtResumen);
-        scrollPane.setBounds(30, 240, 410, 140);
-        add(scrollPane);
-
-        //Agregamos la intensidad para que la pueda manejar el usuario y no sea hardcodeada. 
 
         // Cartel 
         JLabel lblOpcionesCafe = new JLabel("Opciones de Personalización:");
-        lblOpcionesCafe.setBounds(30, 120, 180, 25);
-        add(lblOpcionesCafe);
 
         // Inicializamos el combo 
         comboOpcionesCafe = new JComboBox<>();
-        comboOpcionesCafe.setBounds(210, 120, 230, 25);
-        add(comboOpcionesCafe);
 
         //Boton para confirmar
         btnConfirmarPedido = new JButton("Confirmar Pedido");
-        btnConfirmarPedido.setBounds(30, 400, 200, 35);
-        add(btnConfirmarPedido);
 
         //Boton para volver al Menu
         btnVolver = new JButton("Volver al Menú");
-        btnVolver.setBounds(240, 400, 200, 35);
-        add(btnVolver);
+
+        // --- LAYOUT ADAPTABLE (diseño base 500x500, la pantalla más grande) ---
+        VentanaEscalable layout = EstilosUI.crearVentana(this, 500, 500);
+        layout.agregar(lblMesa, 30, 30, 150, 25, Tipo.LABEL);
+        layout.agregar(comboMesas, 180, 30, 260, 25, Tipo.COMBO);
+        layout.agregar(lblProducto, 30, 80, 150, 25, Tipo.LABEL);
+        layout.agregar(comboProductos, 180, 80, 260, 25, Tipo.COMBO);
+        layout.agregar(lblOpcionesCafe, 30, 120, 180, 25, Tipo.LABEL);
+        layout.agregar(comboOpcionesCafe, 210, 120, 230, 25, Tipo.COMBO);
+        layout.agregar(btnAgregarItem, 180, 160, 260, 30, Tipo.BOTON);
+        layout.agregar(lblResumen, 30, 210, 150, 25, Tipo.LABEL);
+        layout.agregar(scrollPane, 30, 240, 410, 140, Tipo.SOLO_BOUNDS);
+        // txtResumen está dentro del scroll; solo necesita estilo, no posición propia
+        layout.registrarEstilo(txtResumen, Tipo.AREA);
+        layout.agregar(btnConfirmarPedido, 30, 400, 200, 35, Tipo.BOTON);
+        layout.agregar(btnVolver, 240, 400, 200, 35, Tipo.BOTON);
+        layout.activar();
     
         //Traemos la info
 
@@ -155,7 +148,7 @@ public class VentanaPedido extends JFrame{
                     // Creamos una variable temporal que por defecto apunta al producto base
                     Modelo.Producto productoAFacturar = productoElegido;
 
-                    //Si el usuario elegio expresso
+                    //Si el usuario eligio expresso
                     if (nombreSeleccionado.equalsIgnoreCase("Café Espresso")) {
                         int intensidadElegida = comboOpcionesCafe.getSelectedIndex() + 1; // +1 porque empezamos en 0. Si el usario elige intensidad 1, el valor esta en 0+1= intensidad1
                         productoAFacturar = new Modelo.Espresso("Café Espresso", 1500.0, "Chico", intensidadElegida);
@@ -240,6 +233,8 @@ public class VentanaPedido extends JFrame{
                 carrito.clear(); 
                 txtResumen.setText(""); 
                 
+                // Guardamos geometría y volvemos al menú
+                EstilosUI.guardarGeometria(VentanaPedido.this);
                 Vista.VentanaMenu menu = new Vista.VentanaMenu(miCafeteria, clienteActivo);
                 menu.setVisible(true);
                 dispose(); 
@@ -251,6 +246,7 @@ public class VentanaPedido extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
             
+                EstilosUI.guardarGeometria(VentanaPedido.this);
                 Vista.VentanaMenu menu = new Vista.VentanaMenu(miCafeteria, clienteActivo);
                 menu.setVisible(true);
                 

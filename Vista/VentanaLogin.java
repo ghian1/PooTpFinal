@@ -11,6 +11,9 @@ import java.awt.event.ActionEvent;
 import Logica.Cafeteria;
 import Modelo.Cliente;
 
+import Vista.EstilosUI.Tipo;
+import Vista.EstilosUI.VentanaEscalable;
+
 public class VentanaLogin extends JFrame {
     private Cafeteria miCafeteria;     // Guardo en miCafeteria los datos de Cafeteria, ya que ahi registro clientes(Sirve para el Login).
     private JTextField txtEmailLogin;  // Caja de texto para el Email
@@ -22,30 +25,27 @@ public class VentanaLogin extends JFrame {
         this.miCafeteria = miCafeteria;
 
         setTitle("Sistema de Cafetería - Iniciar Sesión");
-        setSize(450, 400); // Mismo tamaño que el registro. 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Si se cierra la cruz, muere el programa
-        setLocationRelativeTo(null); // Centra la ventana en el monitor
-        setLayout(null); // Desactivamos el acomodador automatico para usar tus coordenadas (X, Y)
 
         //Cartel de Email
         JLabel lblEmail = new JLabel("Email:");
-        lblEmail.setBounds(60, 110, 80, 25);
-        add(lblEmail);
 
         //Caja para escribir Email
         txtEmailLogin = new JTextField();
-        txtEmailLogin.setBounds(130, 110, 220, 25);
-        add(txtEmailLogin);
 
         //Boton para ingresar
         btnIngresar = new JButton("Ingresar a la Cafetería");
-        btnIngresar.setBounds(130, 180, 220, 35);
-        add(btnIngresar);
 
         //Boton para volver
         btnVolverRegistro = new JButton("¿No tenés cuenta? Registrate acá");
-        btnVolverRegistro.setBounds(115, 240, 250, 30);
-        add(btnVolverRegistro);
+
+        // --- LAYOUT ADAPTABLE (mismo patrón que VentanaPrincipal) ---
+        VentanaEscalable layout = EstilosUI.crearVentana(this, 450, 400);
+        layout.agregar(lblEmail, 60, 110, 80, 25, Tipo.LABEL);
+        layout.agregar(txtEmailLogin, 130, 110, 220, 25, Tipo.CAMPO);
+        layout.agregar(btnIngresar, 130, 180, 220, 35, Tipo.BOTON);
+        layout.agregar(btnVolverRegistro, 115, 240, 250, 30, Tipo.BOTON_SECUNDARIO);
+        layout.activar();
 
         //Ahora tenemos que configurar los botones de ingresar y de volver. 
 
@@ -71,7 +71,8 @@ public class VentanaLogin extends JFrame {
                     JOptionPane.showMessageDialog(null, "¡Bienvenido/a de vuelta, " + clienteLogueado.getNombre() + "!");
                     txtEmailLogin.setText(""); // Limpiamos la caja de texto
                     
-                    //Puente al Menu
+                    // Guardamos geometría y pasamos al menú
+                    EstilosUI.guardarGeometria(VentanaLogin.this);
                     VentanaMenu pantallaMenu = new VentanaMenu(miCafeteria, clienteLogueado);
                     pantallaMenu.setVisible(true); 
                     dispose();
@@ -87,7 +88,8 @@ public class VentanaLogin extends JFrame {
         btnVolverRegistro.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Creamos la ventana de Registro pasándole el cuaderno intacto
+                // Guardamos geometría y volvemos al registro
+                EstilosUI.guardarGeometria(VentanaLogin.this);
                 VentanaPrincipal pantallaRegistro = new VentanaPrincipal(miCafeteria);
                 pantallaRegistro.setVisible(true);
                 dispose(); // Destruimos este Login para pasar a la otra pantalla

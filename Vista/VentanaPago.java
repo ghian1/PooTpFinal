@@ -10,6 +10,9 @@ import java.awt.event.ActionEvent;
 
 import Logica.Cafeteria;
 
+import Vista.EstilosUI.Tipo;
+import Vista.EstilosUI.VentanaEscalable;
+
 public class VentanaPago extends JFrame {
     private Cafeteria miCafeteria;
     private JComboBox<String> comboMesas;
@@ -21,20 +24,13 @@ public class VentanaPago extends JFrame {
 
         // Configuración básica de la ventana
         setTitle("Cerrar Mesa / Registrar Pago");
-        setSize(400, 300);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setLocationRelativeTo(null);
-        setLayout(null);
 
         //Cartel
         JLabel lblMesa = new JLabel("Seleccione la Mesa a Cobrar:");
-        lblMesa.setBounds(30, 40, 200, 25);
-        add(lblMesa);
 
          //Lista Desplegable con las mesas a pagar
         comboMesas = new JComboBox<>();
-        comboMesas.setBounds(30, 70, 320, 25);
-        add(comboMesas);
 
         // Cargar las mesas en el combo
         for (Modelo.Mesa mesa : miCafeteria.getMesas()) {
@@ -43,18 +39,23 @@ public class VentanaPago extends JFrame {
 
         // Botón Pagar
         btnPagar = new JButton("Consultar Saldo y Pagar");
-        btnPagar.setBounds(30, 130, 320, 35);
-        add(btnPagar);
 
         // Botón Volver
         btnVolver = new JButton("Volver al Menú");
-        btnVolver.setBounds(30, 180, 320, 35);
-        add(btnVolver);
+
+        // --- LAYOUT ADAPTABLE (diseño base 400x300) ---
+        VentanaEscalable layout = EstilosUI.crearVentana(this, 400, 300);
+        layout.agregar(lblMesa, 30, 40, 200, 25, Tipo.LABEL);
+        layout.agregar(comboMesas, 30, 70, 320, 25, Tipo.COMBO);
+        layout.agregar(btnPagar, 30, 130, 320, 35, Tipo.BOTON);
+        layout.agregar(btnVolver, 30, 180, 320, 35, Tipo.BOTON);
+        layout.activar();
 
         //Boton Volver
         btnVolver.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                EstilosUI.guardarGeometria(VentanaPago.this);
                 Vista.VentanaMenu menu = new Vista.VentanaMenu(miCafeteria, null);
                 menu.setVisible(true);
                 dispose();
@@ -110,6 +111,7 @@ public class VentanaPago extends JFrame {
                     mesaElegida.liberar(); 
                     JOptionPane.showMessageDialog(null, "Mesa liberada por el sistema.", "Aviso", JOptionPane.INFORMATION_MESSAGE);
                 }
+                EstilosUI.guardarGeometria(VentanaPago.this);
                 Vista.VentanaMenu menu = new Vista.VentanaMenu(miCafeteria, null);
                 menu.setVisible(true);
             

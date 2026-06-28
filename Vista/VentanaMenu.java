@@ -12,6 +12,10 @@ import Logica.Cafeteria;
 import Modelo.Cliente;
 import Modelo.Comida;
 import Modelo.Producto;
+
+import Vista.EstilosUI.Tipo;
+import Vista.EstilosUI.VentanaEscalable;
+
 public class VentanaMenu extends JFrame{
     private Cafeteria miCafeteria;    
     private Cliente clienteActivo; //Variable nueva para poder refernirnos al cliente que esta actualmente operando. private JButton btnVerCarta;      
@@ -27,14 +31,10 @@ public class VentanaMenu extends JFrame{
 
         //Usamos la config que venimos usando para todas las interfaces. 
         setTitle("Cafetería Diomande - Menú Principal");
-        setSize(450, 400); 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        setLocationRelativeTo(null);
-        setLayout(null);
         
         //Cartel Bienvenida
         JLabel lblBienvenida = new JLabel(); 
-        lblBienvenida.setBounds(30, 20, 390, 25); 
         lblBienvenida.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         if (this.clienteActivo != null) {
@@ -44,27 +44,27 @@ public class VentanaMenu extends JFrame{
             // Si volvimos de pagar de forma anónima, pone este texto genérico y NO se rompe
             lblBienvenida.setText("¡Bienvenido a Diomande!");
         }
-        add(lblBienvenida);
 
         //Carta
         btnVerCarta = new JButton("Ver Carta de Productos");
-        btnVerCarta.setBounds(115, 100, 250, 35); 
-        add(btnVerCarta);
 
         //Hacer pedido
         btnHacerPedido = new JButton("Realizar un Pedido");
-        btnHacerPedido.setBounds(115, 160, 250, 35);
-        add(btnHacerPedido);
 
         //Ir a pagar
         btnIrAPagar = new JButton("Pagar / Liberar Mesas");
-        btnIrAPagar.setBounds(115, 220, 250, 35); // Ajustá el eje Y (140) para que no se pise con tus otros botones
-        add(btnIrAPagar);
 
         //Cerrar sesion
         btnCerrarSesion = new JButton("Cerrar Sesión");
-        btnCerrarSesion.setBounds(115, 280, 250, 35);
-        add(btnCerrarSesion);
+
+        // --- LAYOUT ADAPTABLE ---
+        VentanaEscalable layout = EstilosUI.crearVentana(this, 450, 400);
+        layout.agregar(lblBienvenida, 30, 20, 390, 25, Tipo.TITULO);
+        layout.agregar(btnVerCarta, 115, 100, 250, 35, Tipo.BOTON);
+        layout.agregar(btnHacerPedido, 115, 160, 250, 35, Tipo.BOTON);
+        layout.agregar(btnIrAPagar, 115, 220, 250, 35, Tipo.BOTON);
+        layout.agregar(btnCerrarSesion, 115, 280, 250, 35, Tipo.BOTON);
+        layout.activar();
 
         //Ahora que hicimos la Precarga de productos vamos a mostrarlos. 
         btnVerCarta.addActionListener(new ActionListener() {
@@ -118,7 +118,8 @@ public class VentanaMenu extends JFrame{
         btnIrAPagar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Creamos la ventana de pago pasándole la cafetería central
+                // Guardamos geometría antes de ir a pagar
+                EstilosUI.guardarGeometria(VentanaMenu.this);
                 Vista.VentanaPago pantallaPago = new Vista.VentanaPago(miCafeteria);
                 pantallaPago.setVisible(true);
                 dispose(); 
@@ -130,8 +131,8 @@ public class VentanaMenu extends JFrame{
         btnCerrarSesion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Creamos la ventana de Login pasándole el mismo cuaderno (miCafeteria)
-                // Esto es para que el Login siga teniendo la lista de clientes intacta.
+                // Guardamos geometría y volvemos al login
+                EstilosUI.guardarGeometria(VentanaMenu.this);
                 VentanaLogin pantallaLogin = new VentanaLogin(miCafeteria);
                 
                 // 2. Volvemos a hacer visible el Login
@@ -148,6 +149,8 @@ public class VentanaMenu extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
+                // Guardamos geometría y abrimos pedido
+                EstilosUI.guardarGeometria(VentanaMenu.this);
                 VentanaPedido pantallaPedido = new VentanaPedido(miCafeteria, clienteActivo);
                 
             
